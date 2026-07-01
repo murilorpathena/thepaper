@@ -1,25 +1,34 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const ADMIN_PATHS = ["/admin/dashboard", "/admin/dashboard/"];
-const ADMIN_LOGIN = "/admin/login";
+const PUBLIC_PATHS = ["/login", "/register", "/admin/login"];
+const ADMIN_PATHS = ["/admin/dashboard"];
+const ADVERTISER_PATHS = ["/advertiser/dashboard"];
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname === "/admin/login" || !pathname.startsWith("/admin/")) {
+  if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    return NextResponse.next();
+  }
+
+  const isAdminRoute = ADMIN_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const isAdvertiserRoute = ADVERTISER_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
+
+  if (!isAdminRoute && !isAdvertiserRoute) {
     return NextResponse.next();
   }
 
   const sessionCookie = req.cookies.get("a_session_")?.value;
 
   if (!sessionCookie) {
-    return NextResponse.redirect(new URL(ADMIN_LOGIN, req.url));
+    const dest = isAdminRoute ? "/admin/login" : "/login";
+    return NextResponse.redirect(new URL(dest, req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/advertiser/:path*"],
 };

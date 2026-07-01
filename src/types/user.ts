@@ -1,10 +1,17 @@
+import type { UserRole, DocumentType } from "./advertiser";
+
 export interface UserProfile {
   $id: string;
   userId: string;
+  role: UserRole;
   nickname: string;
   avatarUrl?: string;
   preferredCategories: string[];
-  isAdmin: boolean;
+  documentType?: DocumentType;
+  document?: string;
+  companyName?: string;
+  phone?: string;
+  stripeCustomerId?: string;
   createdAt: string;
 }
 

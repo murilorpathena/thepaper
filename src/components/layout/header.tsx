@@ -41,10 +41,16 @@ export function Header() {
             Ranking
           </Link>
           <Link
-            href="/admin/login"
+            href="/register"
             className="rounded-full border border-paper-300 px-4 py-1.5 text-sm font-medium transition-colors hover:border-paper-400 hover:bg-paper-50 dark:border-paper-700 dark:hover:border-paper-600 dark:hover:bg-paper-900"
           >
-            Admin
+            Anuncie
+          </Link>
+          <Link
+            href="/login"
+            className="rounded-full bg-accent-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-700"
+          >
+            Login
           </Link>
         </div>
       </div>

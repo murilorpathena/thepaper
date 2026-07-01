@@ -1,6 +1,8 @@
 const stats = [
   { label: "Artigos Publicados", value: "1,234", change: "+12%" },
   { label: "Pendentes Aprovação", value: "7", change: "-3" },
+  { label: "Anúncios Pendentes", value: "0", change: "Nenhum" },
+  { label: "Anunciantes Ativos", value: "0", change: "Novo" },
   { label: "Visitantes (mês)", value: "45.2k", change: "+8.1%" },
   { label: "Receita (mês)", value: "R$ 3.420", change: "+22%" },
 ];
@@ -15,7 +17,7 @@ export default function AdminDashboard() {
         Visão geral do ThePaper
       </p>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => (
           <div
             key={stat.label}

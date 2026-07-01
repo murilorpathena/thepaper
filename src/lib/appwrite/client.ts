@@ -25,4 +25,6 @@ export const COLLECTIONS = {
   BANNERS: "banners",
   SPONSORED: "sponsored",
   ADS: "ads",
+  AD_CAMPAIGNS: "ad_campaigns",
+  AD_PROFILES: "ad_profiles",
 } as const;
