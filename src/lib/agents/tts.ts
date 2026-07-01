@@ -1,21 +1,11 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+/**
+ * TTS (Text-to-Speech).
+ * NVIDIA NIM não oferece TTS via API padrão.
+ * Opções futuras: NVIDIA Riva, ElevenLabs, ou Web Speech API (browser).
+ */
 
 export async function textToSpeech(text: string): Promise<string | null> {
-  try {
-    const response = await openai.audio.speech.create({
-      model: "tts-1",
-      voice: "alloy",
-      input: text.slice(0, 4000),
-    });
-
-    const buffer = Buffer.from(await response.arrayBuffer());
-    // TODO: Upload to Appwrite Storage and return URL
-    return "audio-url-here";
-  } catch {
-    return null;
-  }
+  // TODO: Integrar com serviço de TTS (ElevenLabs, Google Cloud TTS, etc.)
+  console.warn("TTS não configurado. textToSpeech retornando null.");
+  return null;
 }

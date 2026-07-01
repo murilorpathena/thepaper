@@ -1,8 +1,6 @@
-import OpenAI from "openai";
+import { createNvidiaClient, DEFAULT_MODEL } from "../nvidia-client";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const client = createNvidiaClient();
 
 export async function generateSeoMetadata(
   title: string,
@@ -10,24 +8,25 @@ export async function generateSeoMetadata(
   content: string
 ) {
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await client.chat.completions.create({
+      model: DEFAULT_MODEL,
       messages: [
         {
           role: "system",
           content:
-            "Generate SEO metadata. Respond only with JSON: { slug, metaDescription, keywords, ogImagePrompt }",
+            "Generate SEO metadata in valid JSON. No markdown, no comments.",
         },
         {
           role: "user",
-          content: `Title: ${title}\nSummary: ${summary}\nContent: ${content.slice(0, 2000)}`,
+          content: `Title: ${title}\nSummary: ${summary}\nContent: ${content.slice(0, 2000)}\n\nReturn JSON: { slug, metaDescription, keywords, ogImagePrompt }`,
         },
       ],
       response_format: { type: "json_object" },
     });
 
     const text = response.choices[0]?.message?.content ?? "{}";
-    return JSON.parse(text);
+    const cleaned = text.replace(/```json\s*|\s*```/g, "").trim();
+    return JSON.parse(cleaned);
   } catch {
     return {
       slug: title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 80),

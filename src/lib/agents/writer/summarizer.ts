@@ -1,8 +1,6 @@
-import OpenAI from "openai";
+import { createNvidiaClient, DEFAULT_MODEL } from "../nvidia-client";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const client = createNvidiaClient();
 
 export interface ProcessedArticle {
   title: string;
@@ -22,14 +20,14 @@ export async function processWithAI(
   rawDescription: string,
   source: string
 ): Promise<ProcessedArticle> {
-  const prompt = `Você é o redator-chefe do ThePaper, um hub de notícias. 
+  const prompt = `Você é o redator-chefe do ThePaper, um hub de notícias.
 Transforme a notícia abaixo em um artigo completo no estilo editorial do ThePaper.
 
 Título original: ${rawTitle}
 Descrição original: ${rawDescription}
 Fonte: ${source}
 
-Gere um JSON com:
+Gere um JSON válido com esta estrutura exata (sem markdown, sem comentários):
 {
   "title": "Título principal (máx 100 chars)",
   "summary": "Resumo em 2-3 frases",
@@ -44,13 +42,13 @@ Gere um JSON com:
 }`;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await client.chat.completions.create({
+      model: DEFAULT_MODEL,
       messages: [
         {
           role: "system",
           content:
-            "Você é um jornalista IA especializado em reescrever notícias. Seu tom é editorial, preciso e acessível. Responda apenas com JSON válido.",
+            "Você é um jornalista IA especializado em reescrever notícias. Seu tom é editorial, preciso e acessível. Responda apenas com JSON válido, sem markdown.",
         },
         { role: "user", content: prompt },
       ],
@@ -58,7 +56,8 @@ Gere um JSON com:
     });
 
     const text = response.choices[0]?.message?.content ?? "{}";
-    return JSON.parse(text) as ProcessedArticle;
+    const cleaned = text.replace(/```json\s*|\s*```/g, "").trim();
+    return JSON.parse(cleaned) as ProcessedArticle;
   } catch (error) {
     console.error("Erro no processamento IA:", error);
     return {

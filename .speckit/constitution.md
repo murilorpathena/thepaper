@@ -17,7 +17,7 @@
 - **Backend**: Appwrite Cloud (Auth, Database, Storage, Functions)
 - **Deploy**: Vercel
 - **Design**: Impeccable vocabulary (DESIGN.md)
-- **IA**: OpenAI GPT-4o-mini / GPT-4o para processamento de texto
+- **IA**: NVIDIA NIM (Llama 3.1 70B) via API compatível com OpenAI
 
 ## Code Standards
 
